@@ -62,6 +62,8 @@
 	];
 
 	qS.questions = category.questions;
+	// Derived before `channels` is narrowed below, which discards every other type.
+	const textChannels = channels.filter((c) => c.type === 0); // text
 	channels = channels.filter((c) => c.type === 4); // category
 	roles = roles.filter((r) => r.name !== '@everyone').sort((a, b) => b.rawPosition - a.rawPosition);
 	roles.forEach((r) => {
@@ -355,6 +357,22 @@
 					</label>
 				</div>
 				<div>
+					<label for="moving" class="font-medium">
+						Moving
+						<i
+							class="fa-solid fa-circle-question cursor-help text-gray-500 dark:text-slate-400"
+							title="Allow staff to move tickets out of this category (if enabled in settings)?"
+						></i>
+						<input
+							type="checkbox"
+							id="moving"
+							name="moving"
+							class="form-checkbox"
+							bind:checked={category.moving}
+						/>
+					</label>
+				</div>
+				<div>
 					<label class="font-medium">
 						Opening message
 						<Required />
@@ -446,6 +464,9 @@
 												{/if}
 												{#if category.claiming && data.settings.claimButton}
 													<discord-button type="secondary">🙌 Claim</discord-button>
+												{/if}
+												{#if category.moving && data.settings.moveButton}
+													<discord-button type="secondary">🗃️ Move</discord-button>
 												{/if}
 												{#if data.settings.closeButton}
 													<discord-button type="destructive">✖️ Close</discord-button>
@@ -578,6 +599,29 @@
 							class="input form-input"
 							bind:value={category.totalLimit}
 						/>
+					</label>
+				</div>
+				<div>
+					<label class="font-medium">
+						Transcript channel
+						<i
+							class="fa-solid fa-circle-question cursor-help text-gray-500 dark:text-slate-400"
+							title="Where should transcripts of closed tickets in this category be posted? Falls back to the server-wide channel."
+						></i>
+						<select class="input form-multiselect" bind:value={category.transcriptChannel}>
+							<option value={null}>Use the server-wide channel</option>
+							{#if category.transcriptChannel && !textChannels.some((c) => c.id === category.transcriptChannel)}
+								<!-- Keep a channel the bot can no longer see, so saving cannot silently clear it. -->
+								<option value={category.transcriptChannel}>
+									Unknown channel ({category.transcriptChannel})
+								</option>
+							{/if}
+							{#each textChannels as channel}
+								<option value={channel.id} class="p-1">
+									{channel.name}
+								</option>
+							{/each}
+						</select>
 					</label>
 				</div>
 			</div>
