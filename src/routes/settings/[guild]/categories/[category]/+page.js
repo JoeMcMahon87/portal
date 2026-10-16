@@ -14,6 +14,7 @@ export async function load({ fetch, params }) {
 			emoji: '',
 			image: '',
 			memberLimit: 1,
+			moving: false,
 			name: '',
 			openingMessage: '',
 			pingRoles: [],
@@ -22,7 +23,8 @@ export async function load({ fetch, params }) {
 			requiredRoles: [],
 			requireTopic: false,
 			staffRoles: [],
-			totalLimit: 50
+			totalLimit: 50,
+			transcriptChannel: null
 		};
 	} else {
 		const response = await fetch(

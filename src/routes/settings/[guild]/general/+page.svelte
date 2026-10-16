@@ -230,6 +230,22 @@
 								/>
 							</label>
 						</div>
+						<div>
+							<label for="moveButton" class="text-base font-medium">
+								Move
+								<i
+									class="fa-solid fa-circle-question cursor-help text-gray-500 dark:text-slate-400"
+									title="Add a move button to the opening message (if enabled in category)?"
+								></i>
+								<input
+									type="checkbox"
+									id="moveButton"
+									name="moveButton"
+									class="form-checkbox"
+									bind:checked={settings.moveButton}
+								/>
+							</label>
+						</div>
 					</div>
 				</div>
 			</div>

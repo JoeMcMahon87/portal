@@ -1,0 +1,68 @@
+# Publishes the built dashboard to the `build` branch, which the bot installs
+# as `@discord-tickets/settings` (see package.json in JoeMcMahon87/tickets-bot).
+#
+# The bot host must not need a frontend toolchain, so the SvelteKit output is
+# built here and committed as an artefact rather than built on install. The
+# branch is rewritten from scratch each time -- it is a build product, not
+# history worth keeping.
+name: Publish the build branch
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  # The build inlines this; it is only a placeholder, as the bot serves the
+  # dashboard from its own origin.
+  PUBLIC_HOST: http://localhost
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      # Node 18 and pnpm 7.9.0 match upstream's own CI: the committed lockfile
+      # is known to resolve under them, and pnpm 7 has no build-script
+      # approval gate to work around.
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 7.9.0
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build
+
+      - name: Publish to the build branch
+        run: |
+          set -euo pipefail
+
+          # Stage the artefact outside the worktree, which is about to be emptied.
+          staging="$(mktemp -d)"
+          cp -R build "$staging/build"
+          cp package.json "$staging/"
+          for f in LICENSE README.md; do
+            [ -f "$f" ] && cp "$f" "$staging/"
+          done
+
+          source_sha="$(git rev-parse --short HEAD)"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          git switch --orphan build
+          # `--orphan` empties the index but can leave files behind; .gitignore
+          # is among them, and it would ignore `build/`.
+          find . -mindepth 1 -maxdepth 1 -not -name .git -exec rm -rf {} +
+          cp -R "$staging"/. .
+
+          git add -A
+          git commit -m "build: dashboard from ${source_sha}"
+          git push --force origin build
