@@ -26,16 +26,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Node 18 and pnpm 7.9.0 match upstream's own CI: the committed lockfile
-      # is known to resolve under them, and pnpm 7 has no build-script
-      # approval gate to work around.
+      # pnpm must be new enough to read the committed lockfile, which is
+      # lockfileVersion 9. Upstream's CI pins pnpm 7.9.0, which cannot: it
+      # warns "Ignoring not compatible lockfile" and silently re-resolves.
+      # That passes for upstream because it runs a plain `pnpm install`;
+      # --frozen-lockfile below refuses instead, which is the behaviour worth
+      # having for a published artefact.
       - uses: pnpm/action-setup@v4
         with:
-          version: 7.9.0
+          version: 11.24.0
           run_install: false
       - uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '24'
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile

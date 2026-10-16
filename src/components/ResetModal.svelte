@@ -21,6 +21,7 @@
 	}
 </script>
 
+<!-- eslint-disable-next-line no-unused-vars -- upstream declares this snippet but never renders it; kept rather than deleted. -->
 {#snippet warning(message)}
 	<div
 		class="rounded-xl border-2 border-orange-600 bg-orange-400/20 p-2 font-medium text-orange-600 dark:border-orange-400 dark:bg-orange-500/20 dark:text-orange-400"

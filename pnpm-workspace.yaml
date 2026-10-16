@@ -1,0 +1,10 @@
+# pnpm 10+ will not run a dependency's install scripts unless it is listed
+# here. esbuild's postinstall is what fetches its platform binary, so without
+# this `vite build` fails. Deliberately not `onlyBuiltDependencies`, which
+# this pnpm ignores in favour of the map below.
+#
+# No `packages:` key: this is a single package, not a workspace. The file
+# exists only because pnpm 10+ moved settings into it.
+allowBuilds:
+  esbuild: true
+  svelte-preprocess: true
