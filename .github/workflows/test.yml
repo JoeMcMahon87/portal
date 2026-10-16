@@ -12,23 +12,25 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      # pnpm 7.9.0 cannot read this repository's lockfile (lockfileVersion 9).
+      # It warns and re-resolves every range from the registry, so the lint ran
+      # against whatever prettier was newest -- 3.9.10 against
+      # prettier-plugin-svelte 3.3.3, which throws `getVisitorKeys is not a
+      # function` on every Svelte file. Installing what the lockfile pins fixes
+      # that at the root, and --frozen-lockfile makes a drifted lockfile an
+      # error rather than a silent upgrade.
+      #
+      # `cache: pnpm` replaces the hand-rolled ~/.pnpm-store cache, whose key
+      # referenced `matrix.node-version` in a job with no matrix.
+      - uses: pnpm/action-setup@v4
         with:
-          node-version: '18'
-      - name: Cache pnpm modules
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-pnpm-modules
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-
-      - uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 7.9.0
+          version: 11.24.0
           run_install: false
-      - run: pnpm install
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - run: pnpm run lint
       - run: pnpm run build

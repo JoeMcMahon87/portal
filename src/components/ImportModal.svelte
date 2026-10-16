@@ -9,6 +9,7 @@
 	let { isOpen, close, guild } = $props();
 
 	let allowClose = $state(true);
+	let logsContainer = $state();
 	onBeforeClose(() => allowClose);
 
 	const client = getContext('client');

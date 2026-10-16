@@ -1,5 +1,5 @@
 <script>
-	import { getContext, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { modals } from 'svelte-modals';
 	import DataModal from '$components/DataModal.svelte';
 	/** @type {{data: import('./$types').PageData}} */

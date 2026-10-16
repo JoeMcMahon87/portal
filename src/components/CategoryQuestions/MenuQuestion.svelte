@@ -1,6 +1,6 @@
 <script>
 	import { modals } from 'svelte-modals';
-	// import OptionsModal from './OptionsModal.svelte';
+	import OptionsModal from './OptionsModal.svelte';
 	import Required from '../Required.svelte';
 	/** @type {{question: any}} */
 	let { question = $bindable() } = $props();
