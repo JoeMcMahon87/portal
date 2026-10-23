@@ -255,6 +255,22 @@
 					</label>
 				</div>
 				<div>
+					<label for="claimLockdown" class="font-medium">
+						Claim lockdown
+						<i
+							class="fa-solid fa-circle-question cursor-help text-gray-500 dark:text-slate-400"
+							title="Hide claimed tickets from the other staff in this category, so only the claimer can see them?"
+						></i>
+						<input
+							type="checkbox"
+							id="claimLockdown"
+							name="claimLockdown"
+							class="form-checkbox"
+							bind:checked={category.claimLockdown}
+						/>
+					</label>
+				</div>
+				<div>
 					<label class="font-medium">
 						Cooldown
 						<i

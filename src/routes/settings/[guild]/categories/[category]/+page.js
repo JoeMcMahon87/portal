@@ -7,6 +7,7 @@ export async function load({ fetch, params }) {
 	if (params.category === 'new') {
 		body = {
 			channelName: '',
+			claimLockdown: true,
 			claiming: false,
 			description: '',
 			discordCategory: 'new',
