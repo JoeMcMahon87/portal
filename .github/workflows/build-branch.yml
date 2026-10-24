@@ -24,7 +24,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       # pnpm must be new enough to read the committed lockfile, which is
       # lockfileVersion 9. Upstream's CI pins pnpm 7.9.0, which cannot: it
@@ -32,11 +32,11 @@ jobs:
       # That passes for upstream because it runs a plain `pnpm install`;
       # --frozen-lockfile below refuses instead, which is the behaviour worth
       # having for a published artefact.
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         with:
           version: 11.24.0
           run_install: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: '24'
           cache: pnpm

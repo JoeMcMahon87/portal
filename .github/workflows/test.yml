@@ -12,7 +12,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       # pnpm 7.9.0 cannot read this repository's lockfile (lockfileVersion 9).
       # It warns and re-resolves every range from the registry, so the lint ran
       # against whatever prettier was newest -- 3.9.10 against
@@ -23,11 +23,11 @@ jobs:
       #
       # `cache: pnpm` replaces the hand-rolled ~/.pnpm-store cache, whose key
       # referenced `matrix.node-version` in a job with no matrix.
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         with:
           version: 11.24.0
           run_install: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: '24'
           cache: pnpm
